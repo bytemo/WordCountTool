@@ -1,11 +1,14 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
-import os, sys, getopt, importlib, glob, tkinter.filedialog
+import os, sys, getopt, importlib, glob, tkinter, tkinter.filedialog
+
+window, button, titleLabel = None, None, None
+command = {'c': False, 'w': False, 'l': False, 'a': False, 's': False, 'x': False}
 
 # 解析命令行参数
 def parseParameter(argv):
-	command = {'c': False, 'w': False, 'l': False, 'a': False, 's': False, 'x': False}
+	global command
 	
 	try:
 		opts, args = getopt.gnu_getopt(argv,"cwlhsax",["help"])
@@ -20,6 +23,10 @@ def parseParameter(argv):
 			printUsage(0)
 		else:
 			command[opt.replace('-', '')] = True
+
+	if command['x']:
+		startGUI()
+
 	# 文件名是否提供
 	if len(args) == 0:
 		printError('未提供目标文件名！', True)
@@ -27,9 +34,7 @@ def parseParameter(argv):
 	fileList = args
 
 	# 处理目标文件
-	if command['x']:
-		file = tkinter.filedialog.askopenfilename()
-	elif command['s']:
+	if command['s']:
 		# 处理通配符
 		fileList = []
 		parserDir(fileList, os.path.abspath(os.path.curdir), args)
@@ -54,7 +59,7 @@ def parseParameter(argv):
 			if os.path.exists(file):
 				tempFile = open(file)
 				parser = importlib.import_module('parser.' + fileType[len(fileType) - 1])
-				parser.parse(tempFile, command)
+				print(parser.parse(tempFile, command))
 			else:
 				printError('文件不存在！')
 
@@ -85,6 +90,37 @@ def printUsage(signal):
 	print('-w:\t返回文件 file_name 的词的数目')
 	print('-l:\t返回文件 file_name 的行数')
 	sys.exit(signal)
+
+# 按钮的点击事件
+def onButtonTap():
+	global window, titleLabel, button
+	file = tkinter.filedialog.askopenfilename()
+	if file != '':
+		window.geometry('300x200')
+		button.destroy()
+		titleLabel.destroy()
+		fileType = file.split('.')
+		if os.path.exists(file):
+			tempFile = open(file)
+			parser = importlib.import_module('parser.' + fileType[len(fileType) - 1])
+			command = {'c': True, 'w': True, 'l': True, 'a': True}
+			textLabel = tkinter.Label(window, text=parser.parse(tempFile, command), font=('', 14))
+			textLabel.pack()
+		else:
+			printError('文件不存在！')
+
+# 创建界面
+def startGUI():
+	global window, titleLabel, button
+	window = tkinter.Tk()
+	window.title('WordCount GUI Window')
+	window.geometry('250x110')
+	titleLabel = tkinter.Label(window, text='点击下方按钮选择文件：', font=('',14), height=2)
+	titleLabel.pack()
+	button = tkinter.Button(window, text="选择文件", font=('', 14), width=10, height=2, command=onButtonTap)
+	button.pack()
+	window.mainloop()
+	sys.exit(0)
 
 # 测试
 def test(param):

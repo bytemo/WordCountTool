@@ -3,4 +3,4 @@
 
 import wc
 
-wc.test('-as *.c')
+wc.test('-x *.c')

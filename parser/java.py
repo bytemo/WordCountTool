@@ -3,6 +3,8 @@
 
 import os, re
 
+output = ''
+
 def parse(file, command):
 	chars, words, lines = 0, 0, 0
 	if command['l'] and not command['c'] and not command['w']:
@@ -51,20 +53,28 @@ def parse(file, command):
 			
 
 	# 输出文件统计信息
-	print('[', file.name.replace(os.path.abspath(os.path.curdir), ''), ']')
-	print('------')
+	printMsg('[', file.name.replace(os.path.abspath(os.path.curdir), ''), ']')
+	printMsg('------')
 	if command['c']:
-		print('字符数:', chars)
+		printMsg('字符数:', chars)
 	if command['w']:
-		print('单词数:', words)
+		printMsg('单词数:', words)
 	if command['l']:
-		print('行数:', lines)
+		printMsg('行数:', lines)
 	if command['a']:
 		if command['c'] or command['w'] or command['l']:
-			print('------')
-		print('代码行数:', codeLine)
-		print('注释行数:', commentLine)
-		print('空行数:', blankLine)
-	print('')
+			printMsg('------')
+		printMsg('代码行数:', codeLine)
+		printMsg('注释行数:', commentLine)
+		printMsg('空行数:', blankLine)
 
 	file.close()
+
+	return output
+
+# 重写输出方法
+def printMsg(*tupleArg):
+	global output
+	for msg in tupleArg:
+		output = output + str(msg)
+	output = output  + '\n'
