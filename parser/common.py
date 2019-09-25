@@ -1,7 +1,13 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
+import os
+
+output = ''
+
 def parse(file, command):
+	global output
+	output = ''
 	chars, words, lines = 0, 0, 0
 	if command['l'] and not command['c'] and not command['w']:
 		line = file.readline()
@@ -27,13 +33,20 @@ def parse(file, command):
 			lines = lines + 1
 
 	# 输出文件统计信息
-	print('[', file.name, ']')
+	printMsg('[', file.name.replace(os.path.abspath(os.path.curdir), ''), ']')
+	printMsg('------')
 	if command['c']:
-		print('字符数:', chars)
+		printMsg('字符数:', chars)
 	if command['w']:
-		print('单词数:', words)
+		printMsg('单词数:', words)
 	if command['l']:
-		print('行数:', lines)
-	print('')
+		printMsg('行数:', lines)
 
 	file.close()
+
+# 重写输出方法
+def printMsg(*tupleArg):
+	global output
+	for msg in tupleArg:
+		output = output + str(msg)
+	output = output  + '\n'

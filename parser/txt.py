@@ -6,6 +6,8 @@ import os
 output = ''
 
 def parse(file, command):
+	global output
+	output = ''
 	chars, words, lines = 0, 0, 0
 	if command['l'] and not command['c'] and not command['w']:
 		line = file.readline()

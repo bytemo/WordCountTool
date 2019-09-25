@@ -58,10 +58,11 @@ def parseParameter(argv):
 			# 只能是文件
 			if os.path.exists(file):
 				if not os.path.exists(os.path.join(os.path.abspath(os.path.curdir), './parser/' + fileType[len(fileType) - 1] + '.py')):
-					printError('暂不支持此文件格式的解析.')
+					print('暂不支持', fileType[len(fileType) - 1], '文件格式的解析.')
+					continue
 				tempFile = open(file)
 				# 热加载文件格式对应的解析器
-				parser = importlib.import_module(fileType[len(fileType) - 1], 'parser')
+				parser = importlib.import_module('.' + fileType[len(fileType) - 1], 'parser')
 				print(parser.parse(tempFile, command))
 			else:
 				printError('文件不存在！')
@@ -108,7 +109,7 @@ def onButtonTap():
 				printError('暂不支持此文件格式的解析.')
 			tempFile = open(file)
 			# 热加载文件格式对应的解析器
-			parser = importlib.import_module(fileType[len(fileType) - 1], 'parser')
+			parser = importlib.import_module('.' + fileType[len(fileType) - 1], 'parser')
 			command = {'c': True, 'w': True, 'l': True, 'a': True}
 			textLabel = tkinter.Label(window, text=parser.parse(tempFile, command), font=('', 14))
 			textLabel.pack()
