@@ -3,4 +3,4 @@
 
 import wc
 
-wc.test('-cwl testFiles/*')
+wc.test('-as *.c')

@@ -4,10 +4,10 @@
 def parse(file, command):
 	chars, words, lines = 0, 0, 0
 	if command['l'] and not command['c'] and not command['w']:
-		line = file.next()
+		line = file.readline()
 		while line != '':
 			lines = lines + 1
-			line = file.next()
+			line = file.readline()
 	else:
 		char = file.read(1)
 		lastChar = ''
@@ -26,11 +26,14 @@ def parse(file, command):
 			words = words + 1
 			lines = lines + 1
 
+	# 输出文件统计信息
+	print('[', file.name, ']')
 	if command['c']:
-		print('字符数：\t', chars)
+		print('字符数:', chars)
 	if command['w']:
-		print('单词数：\t', words)
+		print('单词数:', words)
 	if command['l']:
-		print('行数：\t', lines)
-	
+		print('行数:', lines)
+	print('')
+
 	file.close()

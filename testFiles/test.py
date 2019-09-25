@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
-import os, sys, getopt, importlib, glob, tkinter.filedialog
+import os, sys, getopt, importlib, glob
 
 # 解析命令行参数
 def parseParameter(argv):
@@ -26,13 +26,10 @@ def parseParameter(argv):
 
 	fileList = args
 
-	# 处理目标文件
-	if command['x']:
-		file = tkinter.filedialog.askopenfilename()
-	elif command['s']:
-		# 处理通配符
+	# 处理通配符
+	if command['s']:
 		fileList = []
-		parserDir(fileList, os.path.abspath(os.path.curdir), args)
+		parserDir(fileList, os.path.abspath('.'), args)
 				
 
 	# 调用对应的解析模块
@@ -49,6 +46,12 @@ def parseParameter(argv):
 					parser.parse(tempFile, command)
 				else:
 					printError('文件不存在！')
+			else:
+				if command['s']:
+					# 处理目录
+					print('ss')
+				else:
+					printError('需要 -s 参数！')
 		else:
 			# 只能是文件
 			if os.path.exists(file):
@@ -66,7 +69,7 @@ def parserDir(fileList, sourceDir, fileFormat):
 	# 递归深入子目录
 	for subDir in os.listdir(sourceDir):
 		if os.path.isdir(os.path.join(sourceDir, subDir)):
-			parserDir(fileList, os.path.join(sourceDir, subDir), fileFormat)
+			return parserDir(fileList, os.path.join(sourceDir, subDir), fileFormat)
 
 
 # 输出错误信息

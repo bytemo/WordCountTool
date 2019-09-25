@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
+import os
+
 def parse(file, command):
 	chars, words, lines = 0, 0, 0
 	if command['l'] and not command['c'] and not command['w']:
@@ -26,11 +28,15 @@ def parse(file, command):
 			words = words + 1
 			lines = lines + 1
 
+	# 输出文件统计信息
+	print('[', file.name.replace(os.path.abspath(os.path.curdir), ''), ']')
+	print('------')
 	if command['c']:
 		print('字符数:', chars)
 	if command['w']:
 		print('单词数:', words)
 	if command['l']:
 		print('行数:', lines)
-	
+	print('')
+
 	file.close()
